@@ -1,0 +1,174 @@
+{
+	"github": {
+		"setup": {
+			"status": "Pending",
+			"url": "https://3ptoviducre4i2thccfywv2jji0zmrmx.lambda-url.ap-south-1.on.aws/?token=SFlyvFnVFTFYCHWv9uQKinOMpHH6TvK3",
+			"secretArn": "arn:aws:secretsmanager:ap-south-1:879381269061:secret:runnersSecretsSetup692A93B1-m8H1aV53DTb0-sQDLz6",
+			"secretUrl": "https://ap-south-1.console.aws.amazon.com/secretsmanager/home?region=ap-south-1#!/secret?name=runnersSecretsSetup692A93B1-m8H1aV53DTb0"
+		},
+		"domain": "github.com",
+		"runnerLevel": "org",
+		"webhook": {
+			"url": "https://7v7ng5q6f5gcglmyqctxodix2a0xcwmt.lambda-url.ap-south-1.on.aws/",
+			"status": "OK (note that secret cannot be checked automatically)",
+			"secretArn": "arn:aws:secretsmanager:ap-south-1:879381269061:secret:runnersSecretsWebhook7AF0D7-IBN2RTKPPZCU-krkgvn",
+			"secretUrl": "https://ap-south-1.console.aws.amazon.com/secretsmanager/home?region=ap-south-1#!/secret?name=runnersSecretsWebhook7AF0D7-IBN2RTKPPZCU"
+		},
+		"auth": {
+			"type": "GitHub App",
+			"status": "OK",
+			"secretArn": "arn:aws:secretsmanager:ap-south-1:879381269061:secret:runnersSecretsGitHubEFD9647-K0KcGIrWa8BS-ZQeRM3",
+			"secretUrl": "https://ap-south-1.console.aws.amazon.com/secretsmanager/home?region=ap-south-1#!/secret?name=runnersSecretsGitHubEFD9647-K0KcGIrWa8BS",
+			"privateKeySecretArn": "arn:aws:secretsmanager:ap-south-1:879381269061:secret:runnersSecretsGitHubPrivate-mUuOH21KGe5E-RhcDVi",
+			"privateKeySecretUrl": "https://ap-south-1.console.aws.amazon.com/secretsmanager/home?region=ap-south-1#!/secret?name=runnersSecretsGitHubPrivate-mUuOH21KGe5E",
+			"app": {
+				"id": "1926897",
+				"url": "https://github.com/apps/cdk-github-runners-qcoderdev",
+				"installations": [
+					{
+						"id": 85133276,
+						"url": "https://github.com/organizations/QCoderDev/settings/installations/85133276",
+						"status": "OK",
+						"repositories": [
+							"QCoderDev/qcoder-frontend",
+							"QCoderDev/qcoder-backend",
+							"QCoderDev/qcoder-judge",
+							"QCoderDev/cdk-github-runners"
+						]
+					}
+				]
+			},
+			"personalAuthToken": ""
+		}
+	},
+	"providers": [
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2arm64smallRole29ADFB78-FBziXgYg9Eop",
+			"logGroup": "github-runners-EC2arm64smallLogs1A9626BF-7HjYhYPCb5jo",
+			"securityGroups": ["sg-0e7190e9d81bdef7f"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-07934d711450a3c81",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxArm64SmallBuilder-AmiRecipe-AD0E9660",
+				"latestAmi": "ami-095ea1505ed1532fd"
+			},
+			"labels": ["arm64", "ec2", "t4g.small"]
+		},
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2arm64mediumRole2072DC1B-JLZtIx57GVfN",
+			"logGroup": "github-runners-EC2arm64mediumLogs0BA6C0D0-ac3B4ej6KeIY",
+			"securityGroups": ["sg-009f8f9a0930cdf3a"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-0285d101ec2456407",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxArm64MediumBuilder-AmiRecipe-38D19B4A",
+				"latestAmi": "ami-0d15d980e8b95921b"
+			},
+			"labels": ["arm64", "ec2", "t4g.medium"]
+		},
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2amd64smallRoleC5C8EEEB-V9TrbYGaDDQx",
+			"logGroup": "github-runners-EC2amd64smallLogs3F9B6588-JpRzEghfhMTb",
+			"securityGroups": ["sg-08286fb19b74c3d30"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-0b52e7169284b6a71",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxAmd64SmallBuilder-AmiRecipe-CE58CCD5",
+				"latestAmi": "ami-092a9059095bd1595"
+			},
+			"labels": ["amd64", "ec2", "t3.small"]
+		},
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2amd64mediumRole3150E036-EcMilWUWAv2o",
+			"logGroup": "github-runners-EC2amd64mediumLogs626E55DB-duNVYXfVzZlH",
+			"securityGroups": ["sg-0def65570a2e3c971"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-07e4cc4715c1b9fa7",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxAmd64MediumBuilder-AmiRecipe-25D8B832",
+				"latestAmi": "ami-0292617732e2d9ffb"
+			},
+			"labels": ["amd64", "ec2", "t3.medium"]
+		}
+	],
+	"troubleshooting": {
+		"webhookHandlerArn": "arn:aws:lambda:ap-south-1:879381269061:function:github-runners-runnersWebhookHandlerwebhookhandler-RzUpbtCWARBN:$LATEST",
+		"webhookHandlerUrl": "https://ap-south-1.console.aws.amazon.com/lambda/home?region=ap-south-1#/functions/github-runners-runnersWebhookHandlerwebhookhandler-RzUpbtCWARBN?tab=monitoring",
+		"webhookHandlerLogGroup": "/aws/lambda/github-runners-runnersWebhookHandlerwebhookhandler-RzUpbtCWARBN",
+		"stepFunctionArn": "arn:aws:states:ap-south-1:879381269061:stateMachine:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w",
+		"stepFunctionUrl": "https://ap-south-1.console.aws.amazon.com/states/home?region=ap-south-1#/statemachines/view/arn:aws:states:ap-south-1:879381269061:stateMachine:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w",
+		"stepFunctionLogGroup": "",
+		"recentRuns": [
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-frontend-f026e1d0-8e60-11f0-8d06-bc76e596dff1",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-frontend",
+				"jobId": 50062760565
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-frontend-6ad6af10-8dca-11f0-8418-1db4999ac577",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-frontend",
+				"jobId": 49991716396
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-frontend-6ada5890-8dca-11f0-9138-980f3f4a40a6",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-frontend",
+				"jobId": 49991716395
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-frontend-6ad6d620-8dca-11f0-8362-da18a9d04c07",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-frontend",
+				"jobId": 49991716392
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-judge-2c1a2ae0-8e47-11f0-8c36-e925e66b97ae",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-judge",
+				"jobId": 50044980743
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-judge-0b0dcf50-8dca-11f0-9b53-f86eaed0c643",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-judge",
+				"jobId": 49991563008
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-judge-5813f050-8dc9-11f0-8549-4b01cee22ad4",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-judge",
+				"jobId": 49991256719
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-frontend-da65c150-8dc9-11f0-942b-6c35e684a5ba",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-frontend",
+				"jobId": 49991483075
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-frontend-da6a2e20-8dc9-11f0-9814-28067702a697",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-frontend",
+				"jobId": 49991483069
+			},
+			{
+				"executionArn": "arn:aws:states:ap-south-1:879381269061:execution:runnersRunnerOrchestratorF9B66EBA-PruU1vdqlp1w:qcoder-frontend-da657330-8dc9-11f0-915a-d639bc62e3f4",
+				"status": "SUCCEEDED",
+				"owner": "QCoderDev",
+				"repo": "qcoder-frontend",
+				"jobId": 49991483084
+			}
+		]
+	}
+}

@@ -1,0 +1,11 @@
+regions:
+  - ap-south-1
+
+blocklist:
+- "999999999999"
+
+accounts:
+  "879381269061": {}
+
+bypass-alias-check-accounts:
+  - "879381269061"
