@@ -1,3 +1,18 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:recommended", "customManagers:biomeVersions"],
+	"recreateWhen": "always",
+	"packageRules": [
+		{
+			"matchManagers": ["npm"],
+			"groupName": "npm",
+			"postUpgradeTasks": {
+				"commands": ["npm i"]
+			}
+		},
+		{
+			"matchManagers": ["github-actions"],
+			"groupName": "github-actions"
+		}
+	]
 }
