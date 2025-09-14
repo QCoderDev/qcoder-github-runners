@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsc",
 		"deploy": "npx cdk deploy --all --require-approval never",
-		"status": "aws --region ap-south-1 lambda invoke --function-name github-runners-runnersstatus1A5771C0-Ya95M7VIUmvJ status.json && npm run format",
+		"status": "aws --region ap-south-1 lambda invoke --function-name github-runners-runnersstatus1A5771C0-9D98ABhtmEF5 status.json && npm run format",
 		"bootstrap": "npx cdk bootstrap",
 		"destroy": "npx cdk destroy --all --force && npx cdk bootstrap --destroy && npx cdk bootstrap --clean",
 		"nuke": "aws-nuke nuke -c aws-nuke.yaml --no-alias-check --no-dry-run",
@@ -17,10 +17,11 @@
 		"upgrade-packages": "npm-check-updates -u && npm update"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.3",
+		"@aws-cdk/aws-ec2-alpha": "^2.214.0-alpha.0",
+		"@biomejs/biome": "2.2.4",
 		"@types/jest": "^30.0.0",
-		"@types/node": "24.3.1",
-		"aws-cdk": "2.1029.0",
+		"@types/node": "24.3.3",
+		"aws-cdk": "2.1029.1",
 		"jest": "^30.1.3",
 		"ts-jest": "^29.4.1",
 		"ts-node": "^10.9.2",
@@ -30,6 +31,6 @@
 		"@cloudsnorkel/cdk-github-runners": "^0.14.12",
 		"aws-cdk-lib": "2.214.0",
 		"constructs": "^10.4.2",
-		"npm-check-updates": "^18.1.0"
+		"npm-check-updates": "^18.1.1"
 	}
 }

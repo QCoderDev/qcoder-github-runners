@@ -1,0 +1,14 @@
+name: build
+on: 
+  push:
+jobs:
+  main:
+    runs-on: [self-hosted, t4g.small]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun ci
+      - run: bun run build
+      - run: git diff --exit-code
