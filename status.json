@@ -3,31 +3,31 @@
 		"setup": {
 			"status": "Complete",
 			"url": "",
-			"secretArn": "arn:aws:secretsmanager:me-south-1:879381269061:secret:runnersSecretsSetup692A93B1-eYgkltqPkOUN-Bw1h3x",
-			"secretUrl": "https://me-south-1.console.aws.amazon.com/secretsmanager/home?region=me-south-1#!/secret?name=runnersSecretsSetup692A93B1-eYgkltqPkOUN"
+			"secretArn": "arn:aws:secretsmanager:ap-southeast-3:879381269061:secret:runnersSecretsSetup692A93B1-yv7O7geqlnfN-WeIwGu",
+			"secretUrl": "https://ap-southeast-3.console.aws.amazon.com/secretsmanager/home?region=ap-southeast-3#!/secret?name=runnersSecretsSetup692A93B1-yv7O7geqlnfN"
 		},
 		"domain": "github.com",
 		"runnerLevel": "org",
 		"webhook": {
-			"url": "https://eyqj7nfxjbr2cotccthq7sme5u0oquba.lambda-url.me-south-1.on.aws/",
+			"url": "https://fypoyb2owong6fvrsp64srn57u0msita.lambda-url.ap-southeast-3.on.aws/",
 			"status": "OK (note that secret cannot be checked automatically)",
-			"secretArn": "arn:aws:secretsmanager:me-south-1:879381269061:secret:runnersSecretsWebhook7AF0D7-ZtBJeiqCKauC-Lm09ms",
-			"secretUrl": "https://me-south-1.console.aws.amazon.com/secretsmanager/home?region=me-south-1#!/secret?name=runnersSecretsWebhook7AF0D7-ZtBJeiqCKauC"
+			"secretArn": "arn:aws:secretsmanager:ap-southeast-3:879381269061:secret:runnersSecretsWebhook7AF0D7-KSlmRMYbQrH6-ElDFsz",
+			"secretUrl": "https://ap-southeast-3.console.aws.amazon.com/secretsmanager/home?region=ap-southeast-3#!/secret?name=runnersSecretsWebhook7AF0D7-KSlmRMYbQrH6"
 		},
 		"auth": {
 			"type": "GitHub App",
 			"status": "OK",
-			"secretArn": "arn:aws:secretsmanager:me-south-1:879381269061:secret:runnersSecretsGitHubEFD9647-Fu8TMcGa2X6R-IsFDlw",
-			"secretUrl": "https://me-south-1.console.aws.amazon.com/secretsmanager/home?region=me-south-1#!/secret?name=runnersSecretsGitHubEFD9647-Fu8TMcGa2X6R",
-			"privateKeySecretArn": "arn:aws:secretsmanager:me-south-1:879381269061:secret:runnersSecretsGitHubPrivate-oND6FWV3wveE-sqqzwu",
-			"privateKeySecretUrl": "https://me-south-1.console.aws.amazon.com/secretsmanager/home?region=me-south-1#!/secret?name=runnersSecretsGitHubPrivate-oND6FWV3wveE",
+			"secretArn": "arn:aws:secretsmanager:ap-southeast-3:879381269061:secret:runnersSecretsGitHubEFD9647-gVKpByDc0ugU-He0bvw",
+			"secretUrl": "https://ap-southeast-3.console.aws.amazon.com/secretsmanager/home?region=ap-southeast-3#!/secret?name=runnersSecretsGitHubEFD9647-gVKpByDc0ugU",
+			"privateKeySecretArn": "arn:aws:secretsmanager:ap-southeast-3:879381269061:secret:runnersSecretsGitHubPrivate-v0lSTeqQdIjd-LRc9Hj",
+			"privateKeySecretUrl": "https://ap-southeast-3.console.aws.amazon.com/secretsmanager/home?region=ap-southeast-3#!/secret?name=runnersSecretsGitHubPrivate-v0lSTeqQdIjd",
 			"app": {
-				"id": 1983878,
+				"id": 1984618,
 				"url": "https://github.com/apps/cdk-github-runners-qcoderdev",
 				"installations": [
 					{
-						"id": 86759778,
-						"url": "https://github.com/organizations/QCoderDev/settings/installations/86759778",
+						"id": 86781686,
+						"url": "https://github.com/organizations/QCoderDev/settings/installations/86781686",
 						"status": "OK",
 						"repositories": [
 							"QCoderDev/qcoder-frontend",
@@ -43,60 +43,108 @@
 	},
 	"providers": [
 		{
-			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2arm64smallRole29ADFB78-s5weQHq5ukQm",
-			"logGroup": "github-runners-EC2arm64smallLogs1A9626BF-5xvTn20twfir",
-			"securityGroups": ["sg-01860f8f75523302f"],
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnert4gsmallRoleFA1A75F8-eXqxsSCWrtfJ",
+			"logGroup": "github-runners-runnert4gsmallLogsA4C52FEA-3rn1Nq5ExAK3",
+			"securityGroups": ["sg-0bce68a76ec00106f"],
 			"type": "Ec2RunnerProvider",
 			"ami": {
-				"launchTemplate": "lt-02469f8c790e1c9c0",
-				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxArm64SmallBuilder-AmiRecipe-AD0E9660",
-				"latestAmi": "ami-064ce9df275d861df"
+				"launchTemplate": "lt-086888de413694e8f",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-t4g-smallImage-AmiRecipe-C4430F4B",
+				"latestAmi": "ami-08ab86006e4a8cae6"
 			},
-			"labels": ["arm64", "ec2", "t4g.small"]
+			"labels": ["ec2", "t4g.small"]
 		},
 		{
-			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2arm64mediumRole2072DC1B-vneeBg716ALw",
-			"logGroup": "github-runners-EC2arm64mediumLogs0BA6C0D0-JeyTSTk7xJhy",
-			"securityGroups": ["sg-0355d4e91f80162a5"],
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnert4gmediumRoleCE42C3B8-9AmXwLKL4qyB",
+			"logGroup": "github-runners-runnert4gmediumLogsD2F8051E-S0wtB5VjLgF0",
+			"securityGroups": ["sg-0438821eb9d042e0b"],
 			"type": "Ec2RunnerProvider",
 			"ami": {
-				"launchTemplate": "lt-0bf03be9beb3ffffc",
-				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxArm64MediumBuilder-AmiRecipe-38D19B4A",
-				"latestAmi": "ami-0937e36ca56ce97e0"
+				"launchTemplate": "lt-0452a45476c229138",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-t4g-mediumImage-AmiRecipe-927A4FA9",
+				"latestAmi": "ami-0b3daa1d49e6aa047"
 			},
-			"labels": ["arm64", "ec2", "t4g.medium"]
+			"labels": ["ec2", "t4g.medium"]
 		},
 		{
-			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2amd64smallRoleC5C8EEEB-2PPtrays56Dj",
-			"logGroup": "github-runners-EC2amd64smallLogs3F9B6588-oj2lBPJUj4KP",
-			"securityGroups": ["sg-05b539adebf2afecb"],
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnert4glargeRole062E57BE-jOYHUC8IzkL7",
+			"logGroup": "github-runners-runnert4glargeLogsA253989B-rLQ5qm5aaOsa",
+			"securityGroups": ["sg-0769935d0122b6288"],
 			"type": "Ec2RunnerProvider",
 			"ami": {
-				"launchTemplate": "lt-093c5ed1d5d78376e",
-				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxAmd64SmallBuilder-AmiRecipe-CE58CCD5",
-				"latestAmi": "ami-097a20e1d90d7d576"
+				"launchTemplate": "lt-0b324d522156b00e3",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-t4g-largeImage-AmiRecipe-CD36633E",
+				"latestAmi": "ami-0e1136a017e2eeb6c"
 			},
-			"labels": ["amd64", "ec2", "t3.small"]
+			"labels": ["ec2", "t4g.large"]
 		},
 		{
-			"roleArn": "arn:aws:iam::879381269061:role/github-runners-EC2amd64mediumRole3150E036-eMWjjomj13i8",
-			"logGroup": "github-runners-EC2amd64mediumLogs626E55DB-m2O2rK4pr5xk",
-			"securityGroups": ["sg-0df910eebaf1e8159"],
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnert3smallRoleB8FC2CD3-XZLdB0caG4o8",
+			"logGroup": "github-runners-runnert3smallLogsD106382D-uE2qkfSZPBmi",
+			"securityGroups": ["sg-0073869883b6d9074"],
 			"type": "Ec2RunnerProvider",
 			"ami": {
-				"launchTemplate": "lt-0ce14ee9d22f01778",
-				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-LinuxAmd64MediumBuilder-AmiRecipe-25D8B832",
-				"latestAmi": "ami-0d8389f151d3d782c"
+				"launchTemplate": "lt-071047bb1db3fa175",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-t3-smallImage-AmiRecipe-C818B9F5",
+				"latestAmi": "ami-0ffa0e59b48ae2799"
 			},
-			"labels": ["amd64", "ec2", "t3.medium"]
+			"labels": ["ec2", "t3.small"]
+		},
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnert3mediumRoleE380ADED-jiDm6pbiRCYN",
+			"logGroup": "github-runners-runnert3mediumLogsA7F14BB7-Pu0Ap46kwesh",
+			"securityGroups": ["sg-02c63f7ff923d6a6e"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-05bf8075e8f6eb26d",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-t3-mediumImage-AmiRecipe-64B81C17",
+				"latestAmi": "ami-0207b558ad4166f38"
+			},
+			"labels": ["ec2", "t3.medium"]
+		},
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnert3largeRole70ED8EB3-lXuqip4tqDJ3",
+			"logGroup": "github-runners-runnert3largeLogs847F62C7-0mSddFNlyNJM",
+			"securityGroups": ["sg-0c29c65b6ad4054ba"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-07d02ee77f76a3bae",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-t3-largeImage-AmiRecipe-5657FD3C",
+				"latestAmi": "ami-03a6d778ccab09f0e"
+			},
+			"labels": ["ec2", "t3.large"]
+		},
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnerc8gmediumRoleE0224989-nSXcWWOiSMR6",
+			"logGroup": "github-runners-runnerc8gmediumLogsA782074C-OL5B34tthcbj",
+			"securityGroups": ["sg-0198983fb2e0914d2"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-0a48e62e1ab2c281d",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-c8g-mediumImage-AmiRecipe-141C280A",
+				"latestAmi": "ami-039d781dc47682d27"
+			},
+			"labels": ["ec2", "c8g.medium"]
+		},
+		{
+			"roleArn": "arn:aws:iam::879381269061:role/github-runners-runnerc8glargeRoleB10D7863-WVHAle9vqbtt",
+			"logGroup": "github-runners-runnerc8glargeLogsC0F5D66B-osjsCsbuG3hg",
+			"securityGroups": ["sg-0ff339161a4fc7b45"],
+			"type": "Ec2RunnerProvider",
+			"ami": {
+				"launchTemplate": "lt-0825d4e354f5b8302",
+				"amiBuilderLogGroup": "/aws/imagebuilder/github-runners-runner-c8g-largeImage-AmiRecipe-6CBF9837",
+				"latestAmi": "ami-060cf05edc1f464c2"
+			},
+			"labels": ["ec2", "c8g.large"]
 		}
 	],
 	"troubleshooting": {
-		"webhookHandlerArn": "arn:aws:lambda:me-south-1:879381269061:function:github-runners-runnersWebhookHandlerwebhookhandler-mIedPPn65e5b:$LATEST",
-		"webhookHandlerUrl": "https://me-south-1.console.aws.amazon.com/lambda/home?region=me-south-1#/functions/github-runners-runnersWebhookHandlerwebhookhandler-mIedPPn65e5b?tab=monitoring",
-		"webhookHandlerLogGroup": "/aws/lambda/github-runners-runnersWebhookHandlerwebhookhandler-mIedPPn65e5b",
-		"stepFunctionArn": "arn:aws:states:me-south-1:879381269061:stateMachine:runnersRunnerOrchestratorF9B66EBA-wxYw0fTuUeLi",
-		"stepFunctionUrl": "https://me-south-1.console.aws.amazon.com/states/home?region=me-south-1#/statemachines/view/arn:aws:states:me-south-1:879381269061:stateMachine:runnersRunnerOrchestratorF9B66EBA-wxYw0fTuUeLi",
+		"webhookHandlerArn": "arn:aws:lambda:ap-southeast-3:879381269061:function:github-runners-runnersWebhookHandlerwebhookhandler-K5vpifWldkXE:$LATEST",
+		"webhookHandlerUrl": "https://ap-southeast-3.console.aws.amazon.com/lambda/home?region=ap-southeast-3#/functions/github-runners-runnersWebhookHandlerwebhookhandler-K5vpifWldkXE?tab=monitoring",
+		"webhookHandlerLogGroup": "/aws/lambda/github-runners-runnersWebhookHandlerwebhookhandler-K5vpifWldkXE",
+		"stepFunctionArn": "arn:aws:states:ap-southeast-3:879381269061:stateMachine:runnersRunnerOrchestratorF9B66EBA-CFAcXZmR57n9",
+		"stepFunctionUrl": "https://ap-southeast-3.console.aws.amazon.com/states/home?region=ap-southeast-3#/statemachines/view/arn:aws:states:ap-southeast-3:879381269061:stateMachine:runnersRunnerOrchestratorF9B66EBA-CFAcXZmR57n9",
 		"stepFunctionLogGroup": "",
 		"recentRuns": []
 	}

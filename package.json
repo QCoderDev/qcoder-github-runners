@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsc",
 		"deploy": "npx cdk deploy --all --require-approval never",
-		"status": "aws --region me-south-1 lambda invoke --function-name github-runners-runnersstatus1A5771C0-ijxngxLmkUwo status.json && npm run format",
+		"status": "aws --region ap-southeast-3 lambda invoke --function-name github-runners-runnersstatus1A5771C0-PcBTo2Vv70F6 status.json && npm run format",
 		"bootstrap": "npx cdk bootstrap",
 		"destroy": "npx cdk destroy --all --force && npx cdk bootstrap --destroy && npx cdk bootstrap --clean",
 		"nuke": "aws-nuke nuke -c aws-nuke.yaml --no-alias-check --no-dry-run",
