@@ -10,7 +10,7 @@ import { App, aws_ec2 as ec2, Size, Stack } from "aws-cdk-lib";
 
 const app = new App();
 const stack = new Stack(app, "github-runners", {
-	env: { region: "ap-south-1" },
+	env: { region: "me-south-1" },
 });
 const vpc = new ec2.Vpc(stack, "VPC", {
 	subnetConfiguration: [

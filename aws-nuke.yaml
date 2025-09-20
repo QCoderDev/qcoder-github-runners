@@ -1,5 +1,5 @@
 regions:
-  - ap-south-1
+  - me-south-1
 
 blocklist:
 - "999999999999"
