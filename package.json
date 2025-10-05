@@ -18,10 +18,10 @@
 	},
 	"devDependencies": {
 		"@aws-cdk/aws-ec2-alpha": "^2.214.0-alpha.0",
-		"@biomejs/biome": "2.2.4",
+		"@biomejs/biome": "2.2.5",
 		"@types/jest": "^30.0.0",
-		"@types/node": "24.5.2",
-		"aws-cdk": "2.1029.2",
+		"@types/node": "24.6.2",
+		"aws-cdk": "2.1029.4",
 		"jest": "^30.1.3",
 		"ts-jest": "^29.4.1",
 		"ts-node": "^10.9.2",
@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@cloudsnorkel/cdk-github-runners": "^0.14.12",
-		"aws-cdk-lib": "2.216.0",
+		"aws-cdk-lib": "2.219.0",
 		"constructs": "^10.4.2",
 		"npm-check-updates": "^19.0.0"
 	}
