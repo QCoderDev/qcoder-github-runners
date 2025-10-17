@@ -33,7 +33,7 @@ const vpc = new ec2.Vpc(stack, "VPC", {
 const IMAGE_OS = Os.LINUX_UBUNTU_2404;
 const IMAGE_CMDS = [
 	"apt update",
-	"apt install -y make",
+	"apt install -y make libatomic1",
 	"apt upgrade -y",
 	"apt autoremove -y",
 	"apt clean -y",
