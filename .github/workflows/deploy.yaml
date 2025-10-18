@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - 'main'
+  schedule:
+    # Enable periodic package updates in VM
+    # At 00:00 on every Saturday.
+    - cron: '0 0 * * 6'
   workflow_dispatch:
 jobs:
   main:
