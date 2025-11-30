@@ -20,6 +20,6 @@ jobs:
           aws-region: ap-south-1
       - uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version-file: 'package.json'
       - run: npm ci
       - run: npm run deploy
