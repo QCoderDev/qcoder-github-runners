@@ -7,7 +7,7 @@
 			"matchManagers": ["npm"],
 			"groupName": "npm",
 			"postUpgradeTasks": {
-				"commands": ["npm i"]
+				"commands": ["npm i", "bun i"]
 			}
 		},
 		{
