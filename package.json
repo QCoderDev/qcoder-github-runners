@@ -14,7 +14,7 @@
 		"bootstrap": "npx cdk bootstrap",
 		"destroy": "npx cdk destroy --all --force && npx cdk bootstrap --destroy && npx cdk bootstrap --clean",
 		"nuke": "aws-nuke nuke -c aws-nuke.yaml --no-alias-check --no-dry-run",
-		"lint": "biome check --verbose",
+		"lint": "biome check --verbose && npx --yes --package renovate -- renovate-config-validator --strict",
 		"format": "biome check --write --verbose",
 		"all": "npm run format && npm run lint && npm run build && npm run deploy",
 		"upgrade-packages": "npm-check-updates -u && npm update"
