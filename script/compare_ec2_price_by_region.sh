@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
-# Usage:
-#   ./cheapest-spot.sh "<itype[,itype2 ...]>" [hours] [product] [target-capacity] [sps-samples]
-# Examples:
-#   ./cheapest-spot.sh "t3.medium,t4g.small" 168 "Linux/UNIX (Amazon VPC)" 1 3
-#   ./cheapest-spot.sh "t3.medium t4g.small"
-
 set -euo pipefail
 
 ITYPE_LIST="${1:-t4g.small,t3.small,t4g.medium,t3.medium,c8g.medium,t4g.large,t3.large,c8g.large}" # comma or space separated
-HOURS="${2:-168}"
+MONTHS="${2:-24}"
 PRODUCT="${3:-Linux/UNIX (Amazon VPC)}"
 
-START="$(date -u -d "$HOURS hours ago" +%Y-%m-%dT%H:%M:%SZ)"
+START="$(date -u -d "$MONTHS months ago" +%Y-%m-%dT%H:%M:%SZ)"
 END="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 # Normalize to array (split on commas/spaces)
@@ -24,8 +18,8 @@ render_table_for_type() {
   echo
   echo "### ${ITYPE}"
   echo
-  echo '| region | avg_usd | min_usd |'
-  echo '|:--|--:|--:|'
+  echo '| region | avg_usd | min_usd | std_dev |'
+  echo '|:--|--:|--:|--:|'
 
   {
     for r in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text); do
@@ -41,13 +35,22 @@ render_table_for_type() {
       count=$(jq '[.SpotPriceHistory[]] | length' <<<"$json")
       if [[ "$count" -eq 0 ]]; then continue; fi
 
-      avg=$(jq -r '[.SpotPriceHistory[].SpotPrice|tonumber] | (add/length)' <<<"$json")
-      min=$(jq -r '[.SpotPriceHistory[].SpotPrice|tonumber] | min' <<<"$json")
+      # avg, min, stddev via jq
+      stats=$(jq -r '
+        [ .SpotPriceHistory[].SpotPrice | tonumber ] as $p
+        | ($p | length) as $n
+        | ($p | add / $n) as $mean
+        | ($p | min) as $min
+        | ([$p[] | (.-$mean) | . * .] | add / $n | sqrt) as $std
+        | "\($mean) \($min) \($std)"
+      ' <<<"$json")
+
+      read -r avg min std <<<"$stats"
 
       # Emit TSV (for numeric sort), convert to MD later
-      printf "%s\t%.5f\t%.5f\n" "$r" "$avg" "$min"
+      printf "%s\t%.5f\t%.5f\t%.5f\n" "$r" "$avg" "$min" "$std"
     done
-  } | sort -k2,2n | head -11 | awk -F'\t' 'BEGIN{OFS=" | "} {print "| " $1, $2, $3 " |"}'
+  } | sort -k2,2n | head -20 | awk -F'\t' 'BEGIN{OFS=" | "} {print "| " $1, $2, $3, $4 " |"}'
 }
 
 for it in "${ITYPES[@]}"; do
