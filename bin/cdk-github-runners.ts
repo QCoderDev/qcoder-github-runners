@@ -45,23 +45,51 @@ const isArmFamily = (s: string) => /\dg\./.test(s) || /^a1\./.test(s);
 const archOf = (itype: ec2.InstanceType) =>
 	isArmFamily(itype.toString()) ? Architecture.ARM64 : Architecture.X86_64;
 
-const makeImageBuilder = (id: string, itype: ec2.InstanceType) => {
-	const builder = Ec2RunnerProvider.imageBuilder(stack, `${id}Image`, {
-		architecture: archOf(itype),
+const armImageBuilder = Ec2RunnerProvider.imageBuilder(
+	stack,
+	"ArmImageBuilder",
+	{
+		architecture: Architecture.ARM64,
 		os: IMAGE_OS,
-		awsImageBuilderOptions: { instanceType: itype },
+		awsImageBuilderOptions: {
+			instanceType: ec2.InstanceType.of(
+				ec2.InstanceClass.T4G,
+				ec2.InstanceSize.MEDIUM,
+			),
+		},
 		vpc,
-	});
-	builder.addComponent(RunnerImageComponent.custom({ commands: IMAGE_CMDS }));
-	return builder;
-};
+	},
+);
+armImageBuilder.addComponent(
+	RunnerImageComponent.custom({ commands: IMAGE_CMDS }),
+);
+
+const x86ImageBuilder = Ec2RunnerProvider.imageBuilder(
+	stack,
+	"X86ImageBuilder",
+	{
+		architecture: Architecture.X86_64,
+		os: IMAGE_OS,
+		awsImageBuilderOptions: {
+			instanceType: ec2.InstanceType.of(
+				ec2.InstanceClass.T3,
+				ec2.InstanceSize.MEDIUM,
+			),
+		},
+		vpc,
+	},
+);
+x86ImageBuilder.addComponent(
+	RunnerImageComponent.custom({ commands: IMAGE_CMDS }),
+);
 
 const makeProvider = (id: string, itype: ec2.InstanceType) =>
 	new Ec2RunnerProvider(stack, id, {
 		instanceType: itype,
 		storageSize: Size.gibibytes(20),
 		labels: ["ec2", itype.toString()],
-		imageBuilder: makeImageBuilder(id, itype),
+		imageBuilder:
+			archOf(itype) === Architecture.ARM64 ? armImageBuilder : x86ImageBuilder,
 		spot: true,
 		vpc,
 	});
