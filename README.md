@@ -1,18 +1,15 @@
-# Welcome to your CDK TypeScript project
+# qcoder-github-runners
 
-This is a blank project for CDK development with TypeScript.
+This is for self-hosting github actions runners in AWS using https://github.com/CloudSnorkel/cdk-github-runners.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+The starndard runners provided by GitHub tends to be quite expensive.
 
-## Useful commands
+For example, below compares two standard instances
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `npx cdk deploy`  deploy this stack to your default AWS account/region
-* `npx cdk diff`    compare deployed stack with current state
-* `npx cdk synth`   emits the synthesized CloudFormation template
+- [Standard linux 2-core runner](https://docs.github.com/en/billing/reference/actions-runner-pricing): 0.96 USD/hour
+- [AWS t4g.small Spot Instance](https://aws.amazon.com/ec2/instance-types/t4/): 0.0033 USD/hour
 
+which leads to up to 290x cost efficiency.
 
 ## EC2 Spot Price by Region
 - Run script/compare_ec2_price_by_region.sh
