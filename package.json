@@ -31,7 +31,7 @@
 		"typescript": "~5.9.2"
 	},
 	"dependencies": {
-		"@cloudsnorkel/cdk-github-runners": "^0.14.12",
+		"@cloudsnorkel/cdk-github-runners": "^0.14.17",
 		"aws-cdk-lib": "2.233.0",
 		"constructs": "^10.4.2",
 		"npm-check-updates": "^19.0.0"
