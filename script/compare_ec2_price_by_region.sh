@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ITYPE_LIST="${1:-t4g.small,t3.small,t4g.medium,t3.medium,c8g.medium,t4g.large,t3.large,c8g.large}" # comma or space separated
+ITYPE_LIST="${1:-t4g.small,t3.small,t4g.medium,t3.medium,c8g.medium,t4g.large,t3.large,c8g.large,t4g.xlarge,t3.xlarge,c8g.xlarge}" # comma or space separated
 MONTHS="${2:-24}"
 PRODUCT="${3:-Linux/UNIX (Amazon VPC)}"
 

@@ -13,11 +13,14 @@ const instanceTypes: ec2.InstanceType[] = [
 	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.SMALL),
 	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.LARGE),
+	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
 	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.LARGE),
+	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.LARGE),
+	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.XLARGE), 
 ];
 
 const app = new App();
