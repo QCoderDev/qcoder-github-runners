@@ -34,6 +34,6 @@
 		"@cloudsnorkel/cdk-github-runners": "^0.15.0",
 		"aws-cdk-lib": "2.248.0",
 		"constructs": "^10.4.2",
-		"npm-check-updates": "^19.0.0"
+		"npm-check-updates": "^20.0.0"
 	}
 }
