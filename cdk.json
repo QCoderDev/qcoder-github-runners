@@ -1,5 +1,5 @@
 {
-	"app": "npx ts-node --prefer-ts-exts bin/cdk-github-runners.ts",
+	"app": "bun bin/cdk-github-runners.ts",
 	"watch": {
 		"include": ["**"],
 		"exclude": [

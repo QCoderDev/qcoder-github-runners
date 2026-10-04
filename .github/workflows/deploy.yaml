@@ -8,6 +8,9 @@ on:
     # At 00:00 on every Saturday.
     - cron: '0 0 * * 6'
   workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}
+  queue: max
 jobs:
   main:
     runs-on: [self-hosted, t4g.medium]
@@ -18,8 +21,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-3
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: 'package.json'
-      - run: npm ci
-      - run: npm run deploy
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run deploy
