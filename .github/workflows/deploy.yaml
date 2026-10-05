@@ -22,5 +22,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-3
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
       - run: bun install --frozen-lockfile
       - run: bun run deploy
