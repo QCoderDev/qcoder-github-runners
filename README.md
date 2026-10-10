@@ -11,6 +11,19 @@ For example, below compares two standard instances
 
 which leads to up to 290x cost efficiency.
 
+## Choosing an Instance Type
+
+Look at the effective cost per job, not just the spot price.
+
+- **Burstable (`t3`/`t4g`) runners are charged for CPU credits.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this costs more than the instance itself (e.g. a `t3.small` Docker build pays ~$0.0002 for the instance and ~$0.002 in credits).
+- Use `t4g.small` only for light or mostly idle jobs (formatters, dispatching and waiting on another workflow).
+- Use non-burstable types for CPU-bound jobs:
+  - `m5.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
+  - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for linters, code generation, Renovate and tests.
+  - `c8g.medium` (Arm, 1 vCPU, 2 GiB) for small Go/Python scripts.
+- Leave enough memory headroom. The OS, runner agent and Docker daemon take about 0.5 GiB, so a 2 GiB instance leaves about 1.3 GiB for the job. `golangci-lint` (~1.2–1.4 GiB peak) was OOM-killed on 2 GiB instances, and `next build` peaks at ~2 GiB.
+- Credit charges show up as the `APS4-CPUCredits:*` usage types in Cost Explorer.
+
 ## EC2 Spot Price by Region
 - Run script/compare_ec2_price_by_region.sh
 - Benchmark: https://browser.geekbench.com/
@@ -417,3 +430,28 @@ Cheapest 20 regions in average for recent 2 years as of 2026/10/03:
 | ap-southeast-7 | 0.03865 | 0.03110 | 0.00335 |
 | eu-west-2 | 0.03886 | 0.01610 | 0.00703 |
 | eu-south-1 | 0.04038 | 0.02110 | 0.00806 |
+
+### m5.large
+
+| region | avg_usd | min_usd | std_dev |
+|:--|--:|--:|--:|
+| ap-southeast-3 | 0.02027 | 0.01200 | 0.00605 |
+| eu-north-1 | 0.02164 | 0.01020 | 0.00624 |
+| eu-south-1 | 0.02263 | 0.01880 | 0.00266 |
+| ap-south-2 | 0.02562 | 0.01010 | 0.00874 |
+| sa-east-1 | 0.02665 | 0.01880 | 0.00284 |
+| af-south-1 | 0.02772 | 0.01800 | 0.00467 |
+| ap-southeast-4 | 0.02970 | 0.02270 | 0.00473 |
+| ap-east-1 | 0.02996 | 0.01560 | 0.00639 |
+| us-east-2 | 0.03106 | 0.01850 | 0.00587 |
+| ap-south-1 | 0.03151 | 0.01970 | 0.00517 |
+| ap-northeast-2 | 0.03217 | 0.01600 | 0.00722 |
+| il-central-1 | 0.03721 | 0.02780 | 0.00241 |
+| eu-west-2 | 0.03789 | 0.03320 | 0.00219 |
+| ca-central-1 | 0.03842 | 0.03330 | 0.00248 |
+| eu-west-3 | 0.03920 | 0.03190 | 0.00263 |
+| us-west-2 | 0.03969 | 0.03090 | 0.00343 |
+| us-west-1 | 0.03987 | 0.03220 | 0.00404 |
+| ap-northeast-3 | 0.04085 | 0.03460 | 0.00263 |
+| eu-south-2 | 0.04102 | 0.02560 | 0.00863 |
+| ca-west-1 | 0.04139 | 0.03270 | 0.00658 |
