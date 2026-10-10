@@ -3,7 +3,7 @@ on:
   push:
 jobs:
   main:
-    runs-on: [self-hosted, t4g.small]
+    runs-on: [self-hosted, c8g.medium]
     steps:
       - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
