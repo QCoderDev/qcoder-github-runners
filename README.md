@@ -13,16 +13,12 @@ which leads to up to 290x cost efficiency.
 
 ## Choosing an Instance Type
 
-Look at the effective cost per job, not just the spot price.
-
 - **Burstable (`t3`/`t4g`) runners are charged for CPU credits.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this costs more than the instance itself (e.g. a `t3.small` Docker build pays ~$0.0002 for the instance and ~$0.002 in credits).
 - Use `t4g.small` only for light or mostly idle jobs (formatters, dispatching and waiting on another workflow).
 - Use non-burstable types for CPU-bound jobs:
   - `m5.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
   - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for linters, code generation, Renovate and tests.
   - `c8g.medium` (Arm, 1 vCPU, 2 GiB) for small Go/Python scripts.
-- Leave enough memory headroom. The OS, runner agent and Docker daemon take about 0.5 GiB, so a 2 GiB instance leaves about 1.3 GiB for the job. `golangci-lint` (~1.2–1.4 GiB peak) was OOM-killed on 2 GiB instances, and `next build` peaks at ~2 GiB.
-- Credit charges show up as the `APS4-CPUCredits:*` usage types in Cost Explorer.
 
 ## EC2 Spot Price by Region
 - Run script/compare_ec2_price_by_region.sh
