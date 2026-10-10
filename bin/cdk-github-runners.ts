@@ -10,20 +10,12 @@ import { App, aws_ec2 as ec2, Size, Stack } from "aws-cdk-lib";
 
 // ---- Edit here: explicit InstanceType objects ----
 const instanceTypes: ec2.InstanceType[] = [
-	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.SMALL),
-	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.MEDIUM),
-	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.LARGE),
-	ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.XLARGE),
-	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.SMALL),
-	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM),
-	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.LARGE),
-	ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M5, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M7I, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C7I, ec2.InstanceSize.LARGE),
@@ -49,7 +41,7 @@ const IMAGE_CMDS = [
 	"apt autoclean -y",
 ];
 
-// ARM/x86 detection from the instance-type string ("t4g.small", "t3.small", etc.)
+// ARM/x86 detection from the instance-type string ("c8g.medium", "m5.large", etc.)
 const isArmFamily = (s: string) => /\dg\./.test(s) || /^a1\./.test(s);
 const archOf = (itype: ec2.InstanceType) =>
 	isArmFamily(itype.toString()) ? Architecture.ARM64 : Architecture.X86_64;
@@ -62,7 +54,7 @@ const armImageBuilder = Ec2RunnerProvider.imageBuilder(
 		os: IMAGE_OS,
 		awsImageBuilderOptions: {
 			instanceType: ec2.InstanceType.of(
-				ec2.InstanceClass.T4G,
+				ec2.InstanceClass.M8G,
 				ec2.InstanceSize.MEDIUM,
 			),
 		},
@@ -81,8 +73,8 @@ const x86ImageBuilder = Ec2RunnerProvider.imageBuilder(
 		os: IMAGE_OS,
 		awsImageBuilderOptions: {
 			instanceType: ec2.InstanceType.of(
-				ec2.InstanceClass.T3,
-				ec2.InstanceSize.MEDIUM,
+				ec2.InstanceClass.M5,
+				ec2.InstanceSize.LARGE,
 			),
 		},
 		vpc,

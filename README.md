@@ -7,18 +7,17 @@ The starndard runners provided by GitHub tends to be quite expensive.
 For example, below compares two standard instances
 
 - [Standard linux 2-core runner](https://docs.github.com/en/billing/reference/actions-runner-pricing): 0.96 USD/hour
-- [AWS t4g.small Spot Instance](https://aws.amazon.com/ec2/instance-types/t4/): 0.0033 USD/hour
+- [AWS c8g.medium Spot Instance](https://aws.amazon.com/ec2/instance-types/c8g/): 0.0066 USD/hour (ap-southeast-3, 30-day average as of 2026/10/11)
 
-which leads to up to 290x cost efficiency.
+which leads to about 145x cost efficiency.
 
 ## Choosing an Instance Type
 
-- **Burstable (`t3`/`t4g`) runners are charged for CPU credits.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this costs more than the instance itself (e.g. a `t3.small` Docker build pays ~$0.0002 for the instance and ~$0.002 in credits).
-- Use `t4g.small` only for light or mostly idle jobs (formatters, dispatching and waiting on another workflow).
-- Use non-burstable types for CPU-bound jobs:
-  - `m5.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
+- **Burstable (`t3`/`t4g`) types are not provided.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this cost more than the instance itself (e.g. a `t3.small` Docker build paid ~$0.0002 for the instance and ~$0.002 in credits).
+- Use non-burstable types:
+  - `c8g.medium` (Arm, 1 vCPU, 2 GiB) for light jobs and small Go/Python scripts.
   - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for linters, code generation, Renovate and tests.
-  - `c8g.medium` (Arm, 1 vCPU, 2 GiB) for small Go/Python scripts.
+  - `m5.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
 
 ## EC2 Spot Price by Region
 - Run script/compare_ec2_price_by_region.sh
@@ -26,106 +25,6 @@ which leads to up to 290x cost efficiency.
 - Current Region: ap-southeast-3
 
 Cheapest 20 regions in average for recent 2 years as of 2026/10/03:
-
-### t4g.small
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ap-south-1 | 0.00461 | 0.00330 | 0.00062 |
-| ap-south-2 | 0.00477 | 0.00250 | 0.00074 |
-| sa-east-1 | 0.00481 | 0.00320 | 0.00074 |
-| ap-southeast-3 | 0.00497 | 0.00210 | 0.00140 |
-| us-east-2 | 0.00544 | 0.00330 | 0.00084 |
-| ca-west-1 | 0.00549 | 0.00420 | 0.00073 |
-| eu-south-2 | 0.00552 | 0.00310 | 0.00108 |
-| eu-south-1 | 0.00574 | 0.00430 | 0.00039 |
-| af-south-1 | 0.00591 | 0.00350 | 0.00091 |
-| ap-east-1 | 0.00596 | 0.00450 | 0.00066 |
-| eu-north-1 | 0.00637 | 0.00250 | 0.00211 |
-| eu-west-3 | 0.00657 | 0.00550 | 0.00056 |
-| ap-southeast-4 | 0.00667 | 0.00450 | 0.00099 |
-| il-central-1 | 0.00710 | 0.00610 | 0.00058 |
-| us-west-2 | 0.00719 | 0.00520 | 0.00111 |
-| ap-southeast-6 | 0.00725 | 0.00630 | 0.00084 |
-| ap-northeast-3 | 0.00742 | 0.00610 | 0.00138 |
-| us-east-1 | 0.00750 | 0.00520 | 0.00138 |
-| mx-central-1 | 0.00776 | 0.00500 | 0.00066 |
-| eu-west-2 | 0.00819 | 0.00240 | 0.00269 |
-
-### t3.small
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ap-southeast-4 | 0.00498 | 0.00410 | 0.00029 |
-| ap-southeast-3 | 0.00541 | 0.00260 | 0.00163 |
-| us-east-2 | 0.00591 | 0.00430 | 0.00116 |
-| ca-west-1 | 0.00620 | 0.00450 | 0.00101 |
-| ap-east-1 | 0.00631 | 0.00420 | 0.00143 |
-| eu-south-1 | 0.00649 | 0.00420 | 0.00101 |
-| sa-east-1 | 0.00659 | 0.00560 | 0.00048 |
-| ap-south-2 | 0.00673 | 0.00360 | 0.00159 |
-| ap-northeast-2 | 0.00687 | 0.00350 | 0.00134 |
-| eu-north-1 | 0.00692 | 0.00240 | 0.00232 |
-| eu-south-2 | 0.00721 | 0.00530 | 0.00114 |
-| af-south-1 | 0.00728 | 0.00460 | 0.00103 |
-| us-west-2 | 0.00746 | 0.00620 | 0.00063 |
-| mx-central-1 | 0.00776 | 0.00600 | 0.00097 |
-| ap-south-1 | 0.00780 | 0.00520 | 0.00131 |
-| il-central-1 | 0.00780 | 0.00560 | 0.00069 |
-| ap-east-2 | 0.00788 | 0.00630 | 0.00120 |
-| us-east-1 | 0.00798 | 0.00540 | 0.00089 |
-| us-west-1 | 0.00899 | 0.00790 | 0.00061 |
-| ca-central-1 | 0.00901 | 0.00790 | 0.00048 |
-
-### t4g.medium
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ap-south-1 | 0.00990 | 0.00770 | 0.00168 |
-| ap-southeast-3 | 0.01024 | 0.00420 | 0.00313 |
-| ap-south-2 | 0.01031 | 0.00550 | 0.00170 |
-| us-east-2 | 0.01126 | 0.00820 | 0.00167 |
-| sa-east-1 | 0.01196 | 0.00690 | 0.00373 |
-| ca-west-1 | 0.01294 | 0.00990 | 0.00127 |
-| il-central-1 | 0.01348 | 0.00980 | 0.00132 |
-| ap-northeast-3 | 0.01374 | 0.01220 | 0.00222 |
-| af-south-1 | 0.01385 | 0.01140 | 0.00157 |
-| ap-southeast-4 | 0.01511 | 0.01300 | 0.00072 |
-| mx-central-1 | 0.01531 | 0.01050 | 0.00214 |
-| ap-northeast-2 | 0.01587 | 0.00950 | 0.00435 |
-| eu-south-2 | 0.01587 | 0.00940 | 0.00317 |
-| ap-east-1 | 0.01617 | 0.01150 | 0.00186 |
-| ap-southeast-6 | 0.01669 | 0.01270 | 0.00343 |
-| ap-southeast-7 | 0.01719 | 0.01230 | 0.00090 |
-| us-west-1 | 0.01733 | 0.01370 | 0.00227 |
-| ap-east-2 | 0.01741 | 0.01540 | 0.00098 |
-| eu-north-1 | 0.01751 | 0.00850 | 0.00593 |
-| us-west-2 | 0.01764 | 0.01240 | 0.00227 |
-
-### t3.medium
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ap-southeast-3 | 0.01258 | 0.00530 | 0.00342 |
-| sa-east-1 | 0.01418 | 0.01060 | 0.00165 |
-| eu-south-2 | 0.01439 | 0.01040 | 0.00291 |
-| us-east-2 | 0.01467 | 0.01050 | 0.00156 |
-| eu-north-1 | 0.01531 | 0.00710 | 0.00436 |
-| eu-south-1 | 0.01532 | 0.01360 | 0.00093 |
-| ap-southeast-4 | 0.01544 | 0.01150 | 0.00135 |
-| ap-northeast-2 | 0.01577 | 0.01020 | 0.00227 |
-| ca-west-1 | 0.01582 | 0.01380 | 0.00102 |
-| il-central-1 | 0.01608 | 0.01440 | 0.00043 |
-| ap-south-2 | 0.01618 | 0.00860 | 0.00320 |
-| af-south-1 | 0.01639 | 0.01440 | 0.00186 |
-| eu-west-2 | 0.01700 | 0.01300 | 0.00116 |
-| us-east-1 | 0.01765 | 0.01520 | 0.00135 |
-| ap-south-1 | 0.01792 | 0.01330 | 0.00204 |
-| us-west-2 | 0.01812 | 0.01380 | 0.00146 |
-| ca-central-1 | 0.01869 | 0.01650 | 0.00087 |
-| ap-east-1 | 0.01879 | 0.01400 | 0.00237 |
-| us-west-1 | 0.01991 | 0.01730 | 0.00167 |
-| ap-northeast-1 | 0.02011 | 0.01740 | 0.00141 |
 
 ### c8g.medium
 
@@ -177,56 +76,6 @@ Cheapest 20 regions in average for recent 2 years as of 2026/10/03:
 | ap-east-2 | 0.01817 | 0.01430 | 0.00371 |
 | eu-central-2 | 0.01911 | 0.01510 | 0.00085 |
 
-### t4g.large
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ap-south-1 | 0.01684 | 0.01270 | 0.00187 |
-| ap-south-2 | 0.01778 | 0.00930 | 0.00321 |
-| us-east-2 | 0.01916 | 0.01340 | 0.00268 |
-| eu-south-2 | 0.02137 | 0.01110 | 0.00466 |
-| ca-west-1 | 0.02358 | 0.01800 | 0.00245 |
-| sa-east-1 | 0.02417 | 0.01700 | 0.00438 |
-| ap-southeast-3 | 0.02488 | 0.00850 | 0.00737 |
-| us-east-1 | 0.02549 | 0.02040 | 0.00250 |
-| eu-north-1 | 0.02556 | 0.00930 | 0.00905 |
-| ap-northeast-3 | 0.02593 | 0.02400 | 0.00222 |
-| ap-southeast-4 | 0.02625 | 0.01710 | 0.00310 |
-| ap-northeast-2 | 0.02676 | 0.01410 | 0.00741 |
-| af-south-1 | 0.02689 | 0.02200 | 0.00336 |
-| ap-southeast-6 | 0.02776 | 0.02590 | 0.00114 |
-| eu-south-1 | 0.02787 | 0.02250 | 0.00229 |
-| ap-east-1 | 0.02809 | 0.01960 | 0.00247 |
-| us-west-2 | 0.02849 | 0.02190 | 0.00321 |
-| il-central-1 | 0.02885 | 0.02320 | 0.00177 |
-| mx-central-1 | 0.02917 | 0.02040 | 0.00281 |
-| us-west-1 | 0.03214 | 0.02720 | 0.00352 |
-
-### t3.large
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ca-west-1 | 0.01743 | 0.01090 | 0.00284 |
-| ap-southeast-4 | 0.01907 | 0.01480 | 0.00113 |
-| ap-southeast-3 | 0.01963 | 0.01060 | 0.00692 |
-| ap-south-2 | 0.02229 | 0.00900 | 0.00603 |
-| eu-south-2 | 0.02531 | 0.01190 | 0.00719 |
-| ap-northeast-2 | 0.02633 | 0.01040 | 0.00799 |
-| af-south-1 | 0.02647 | 0.02080 | 0.00352 |
-| eu-north-1 | 0.02769 | 0.01580 | 0.00475 |
-| us-east-2 | 0.02787 | 0.02270 | 0.00313 |
-| ap-east-1 | 0.02815 | 0.01770 | 0.00588 |
-| ap-east-2 | 0.02844 | 0.02330 | 0.00334 |
-| mx-central-1 | 0.02903 | 0.02350 | 0.00210 |
-| il-central-1 | 0.03019 | 0.01880 | 0.00727 |
-| us-east-1 | 0.03078 | 0.02580 | 0.00253 |
-| ap-south-1 | 0.03142 | 0.01920 | 0.00521 |
-| us-west-2 | 0.03207 | 0.02760 | 0.00283 |
-| ap-southeast-6 | 0.03225 | 0.03070 | 0.00077 |
-| eu-west-2 | 0.03321 | 0.01250 | 0.00662 |
-| eu-south-1 | 0.03369 | 0.02810 | 0.00361 |
-| ca-central-1 | 0.03378 | 0.02520 | 0.00413 |
-
 ### c8g.large
 
 | region | avg_usd | min_usd | std_dev |
@@ -276,56 +125,6 @@ Cheapest 20 regions in average for recent 2 years as of 2026/10/03:
 | sa-east-1 | 0.04123 | 0.02630 | 0.01194 |
 | ap-southeast-5 | 0.04325 | 0.03380 | 0.00394 |
 | eu-west-2 | 0.04467 | 0.01420 | 0.01164 |
-
-### t4g.xlarge
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ca-west-1 | 0.03275 | 0.02310 | 0.00745 |
-| ap-south-2 | 0.03406 | 0.01650 | 0.00649 |
-| eu-south-2 | 0.03443 | 0.01540 | 0.01225 |
-| ap-south-1 | 0.03824 | 0.02890 | 0.00403 |
-| eu-north-1 | 0.03905 | 0.01670 | 0.00937 |
-| il-central-1 | 0.04075 | 0.02800 | 0.01367 |
-| ap-southeast-4 | 0.04172 | 0.02820 | 0.00542 |
-| ap-southeast-3 | 0.04450 | 0.01700 | 0.01307 |
-| eu-central-2 | 0.04750 | 0.01690 | 0.01654 |
-| af-south-1 | 0.04866 | 0.03300 | 0.00457 |
-| ap-northeast-3 | 0.05115 | 0.04830 | 0.00172 |
-| us-east-2 | 0.05399 | 0.04370 | 0.00606 |
-| eu-south-1 | 0.05499 | 0.04660 | 0.00293 |
-| ap-southeast-6 | 0.05717 | 0.04920 | 0.00705 |
-| sa-east-1 | 0.05903 | 0.04900 | 0.00501 |
-| ap-northeast-2 | 0.05904 | 0.01660 | 0.02051 |
-| ap-southeast-7 | 0.05913 | 0.04180 | 0.00964 |
-| mx-central-1 | 0.05963 | 0.03620 | 0.01042 |
-| ap-east-1 | 0.06183 | 0.04510 | 0.00917 |
-| us-east-1 | 0.06548 | 0.04860 | 0.00764 |
-
-### t3.xlarge
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ca-west-1 | 0.03223 | 0.02180 | 0.00500 |
-| ap-southeast-4 | 0.03660 | 0.02890 | 0.00205 |
-| ap-southeast-3 | 0.03846 | 0.02110 | 0.01407 |
-| eu-south-2 | 0.04103 | 0.02030 | 0.01396 |
-| eu-north-1 | 0.04796 | 0.02850 | 0.00831 |
-| ap-northeast-2 | 0.05053 | 0.02080 | 0.01472 |
-| ap-south-2 | 0.05059 | 0.01790 | 0.01251 |
-| eu-central-2 | 0.05291 | 0.03700 | 0.01010 |
-| ap-south-1 | 0.05401 | 0.03930 | 0.00694 |
-| ap-east-2 | 0.05411 | 0.04390 | 0.00510 |
-| us-east-2 | 0.05603 | 0.04060 | 0.00539 |
-| ap-east-1 | 0.05841 | 0.04170 | 0.00815 |
-| af-south-1 | 0.05851 | 0.04510 | 0.00628 |
-| us-east-1 | 0.05872 | 0.04350 | 0.00730 |
-| sa-east-1 | 0.06032 | 0.04860 | 0.00586 |
-| us-west-2 | 0.06084 | 0.05330 | 0.00441 |
-| eu-south-1 | 0.06255 | 0.04510 | 0.00681 |
-| ap-northeast-1 | 0.06341 | 0.05040 | 0.00712 |
-| ap-southeast-5 | 0.06441 | 0.05370 | 0.00422 |
-| eu-west-2 | 0.06518 | 0.02690 | 0.01019 |
 
 ### c8g.xlarge
 
