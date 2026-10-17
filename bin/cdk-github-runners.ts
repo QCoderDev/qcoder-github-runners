@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import {
 	Architecture,
+	CompositeProvider,
 	Ec2RunnerProvider,
 	GitHubRunners,
 	Os,
@@ -84,20 +85,25 @@ x86ImageBuilder.addComponent(
 	RunnerImageComponent.custom({ commands: IMAGE_CMDS }),
 );
 
-const makeProvider = (id: string, itype: ec2.InstanceType) =>
+const makeProvider = (id: string, itype: ec2.InstanceType, spot: boolean) =>
 	new Ec2RunnerProvider(stack, id, {
 		instanceType: itype,
 		storageSize: Size.gibibytes(20),
 		labels: ["ec2", itype.toString()],
 		imageBuilder:
 			archOf(itype) === Architecture.ARM64 ? armImageBuilder : x86ImageBuilder,
-		spot: true,
+		spot,
 		vpc,
 	});
 
-const providers = instanceTypes.map((itype) =>
-	makeProvider(`runner-${itype.toString().replace(/\./g, "-")}`, itype),
-);
+// Try spot first and fall back to on-demand when there is no spot capacity, instead of leaving the job queued
+const providers = instanceTypes.map((itype) => {
+	const id = `runner-${itype.toString().replace(/\./g, "-")}`;
+	return CompositeProvider.fallback(stack, `${id}-fallback`, [
+		makeProvider(id, itype, true),
+		makeProvider(`${id}-on-demand`, itype, false),
+	]);
+});
 
 const runners = new GitHubRunners(stack, "runners", { providers });
 
