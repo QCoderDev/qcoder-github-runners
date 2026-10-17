@@ -19,6 +19,22 @@ which leads to about 145x cost efficiency.
   - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for linters, code generation, Renovate and tests.
   - `m5.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
 
+## Spot Placement Score in ap-southeast-3
+
+[Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) (1–10, higher means a spot request is more likely to succeed) for one instance per AZ, as of 2026/10/17. Runners launch in `apse3-az1` and `apse3-az2` only.
+
+| instance | apse3-az1 | apse3-az2 | apse3-az3 |
+|:--|--:|--:|--:|
+| c8g.medium | 1 | 1 | 1 |
+| c8g.large | 3 | 1 | 1 |
+| c8g.xlarge | 1 | 1 | 1 |
+| m8g.medium | 3 | 3 | 3 |
+| m8g.large | 3 | 3 | 3 |
+| m8g.xlarge | 3 | 3 | 3 |
+| m5.large | 1 | 1 | 1 |
+| m7i.large | 3 | 1 | 1 |
+| c7i.large | 1 | 1 | 3 |
+
 ## EC2 Spot Price by Region
 - Run script/compare_ec2_price_by_region.sh
 - Benchmark: https://browser.geekbench.com/
