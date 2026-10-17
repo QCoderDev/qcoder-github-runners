@@ -12,7 +12,7 @@ END="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 _tmp="${ITYPE_LIST//,/ }"
 read -r -a ITYPES <<<"$_tmp"
 
-# Spot interruption frequency (last month) per region and instance type
+# Spot interruption frequency (last month) per region and instance type, shown as availability (100% - frequency)
 ADVISOR="$(curl -sf https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json)"
 
 render_table_for_type() {
@@ -50,14 +50,14 @@ render_table_for_type() {
 
       read -r avg min std <<<"$stats"
 
-      # interruption frequency, e.g. "<5%"
-      freq=$(jq -r --arg r "$r" --arg t "$ITYPE" '
+      # availability, e.g. ">95%" for an interruption frequency of "<5%"
+      avail=$(jq -r --arg r "$r" --arg t "$ITYPE" '
         .spot_advisor[$r].Linux[$t].r as $i
-        | if $i == null then "n/a" else (.ranges[] | select(.index == $i) | .label) end
+        | if $i == null then "n/a" else [">95%", "90-95%", "85-90%", "80-85%", "<80%"][$i] end
       ' <<<"$ADVISOR")
 
       # Emit TSV (for numeric sort), convert to MD later
-      printf "%s\t%.5f\t%.5f\t%.5f\t%s\n" "$r" "$avg" "$min" "$std" "$freq"
+      printf "%s\t%.5f\t%.5f\t%.5f\t%s\n" "$r" "$avg" "$min" "$std" "$avail"
     done
   } | sort -k2,2n | head -20 | awk -F'\t' 'BEGIN{OFS=" | "} {print "| " $1, $2, $3, $4, $5 " |"}'
 }
