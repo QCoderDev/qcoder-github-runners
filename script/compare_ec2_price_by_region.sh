@@ -12,14 +12,17 @@ END="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 _tmp="${ITYPE_LIST//,/ }"
 read -r -a ITYPES <<<"$_tmp"
 
+# Spot interruption frequency (last month) per region and instance type
+ADVISOR="$(curl -sf https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json)"
+
 render_table_for_type() {
   local ITYPE="$1"
 
   echo
   echo "### ${ITYPE}"
   echo
-  echo '| region | avg_usd | min_usd | std_dev |'
-  echo '|:--|--:|--:|--:|'
+  echo '| region | avg_usd | min_usd | std_dev | availability |'
+  echo '|:--|--:|--:|--:|--:|'
 
   {
     for r in $(aws ec2 describe-regions --query 'Regions[].RegionName' --output text); do
@@ -47,10 +50,16 @@ render_table_for_type() {
 
       read -r avg min std <<<"$stats"
 
+      # interruption frequency, e.g. "<5%"
+      freq=$(jq -r --arg r "$r" --arg t "$ITYPE" '
+        .spot_advisor[$r].Linux[$t].r as $i
+        | if $i == null then "n/a" else (.ranges[] | select(.index == $i) | .label) end
+      ' <<<"$ADVISOR")
+
       # Emit TSV (for numeric sort), convert to MD later
-      printf "%s\t%.5f\t%.5f\t%.5f\n" "$r" "$avg" "$min" "$std"
+      printf "%s\t%.5f\t%.5f\t%.5f\t%s\n" "$r" "$avg" "$min" "$std" "$freq"
     done
-  } | sort -k2,2n | head -20 | awk -F'\t' 'BEGIN{OFS=" | "} {print "| " $1, $2, $3, $4 " |"}'
+  } | sort -k2,2n | head -20 | awk -F'\t' 'BEGIN{OFS=" | "} {print "| " $1, $2, $3, $4, $5 " |"}'
 }
 
 for it in "${ITYPES[@]}"; do
