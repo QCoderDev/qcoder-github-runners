@@ -15,9 +15,28 @@ which leads to about 145x cost efficiency.
 
 - **Burstable (`t3`/`t4g`) types are not provided.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this cost more than the instance itself (e.g. a `t3.small` Docker build paid ~$0.0002 for the instance and ~$0.002 in credits).
 - Use non-burstable types:
-  - `c8g.medium` (Arm, 1 vCPU, 2 GiB) for light jobs and small Go/Python scripts.
-  - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for linters, code generation, Renovate and tests.
-  - `m5.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
+  - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for light jobs, linters, code generation, Renovate and tests.
+  - `m7i-flex.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
+- `c8g.medium` and `m5.large` are not provided: their spot capacity in ap-southeast-3 ran out for hours in 2026-10, and their placement score was 1 in every AZ.
+
+## Spot Cost and Availability in ap-southeast-3
+
+As of 2026/10/17:
+
+- `spot_usd` / `on_demand_usd`: price per hour (spot is the 30-day average)
+- `availability`: 100% minus the Spot interruption frequency over the last month ([Spot Instance Advisor](https://aws.amazon.com/ec2/spot/instance-advisor/))
+- `score_az*`: [Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) for one instance (1–10, higher means a spot request is more likely to succeed). Each type was queried on its own, and AWS returns low scores for requests with fewer than three instance types, so compare types with each other rather than reading the score as absolute. Runners launch in `apse3-az1` and `apse3-az2` only.
+
+| instance | spot_usd | on_demand_usd | availability | score_az1 | score_az2 | score_az3 |
+|:--|--:|--:|--:|--:|--:|--:|
+| c8g.large | 0.0162 | 0.0916 | >95% | 3 | 1 | 1 |
+| c8g.xlarge | 0.0311 | 0.1833 | >95% | 3 | 1 | 1 |
+| m8g.medium | 0.0061 | 0.0561 | 90-95% | 3 | 3 | 3 |
+| m8g.large | 0.0126 | 0.1122 | >95% | 3 | 3 | 3 |
+| m8g.xlarge | 0.0243 | 0.2244 | >95% | 3 | 3 | 3 |
+| m7i-flex.large | 0.0129 | 0.1197 | >95% | 3 | 3 | 3 |
+| m7i.large | 0.0142 | 0.1260 | >95% | 3 | 1 | 1 |
+| c7i.large | 0.0116 | 0.1029 | 85-90% | 1 | 1 | 3 |
 
 ## EC2 Spot Price by Region
 - Run script/compare_ec2_price_by_region.sh
@@ -25,31 +44,6 @@ which leads to about 145x cost efficiency.
 - Current Region: ap-southeast-3
 
 Cheapest 20 regions in average for recent 2 years as of 2026/10/03:
-
-### c8g.medium
-
-| region | avg_usd | min_usd | std_dev |
-|:--|--:|--:|--:|
-| ap-south-1 | 0.00778 | 0.00540 | 0.00115 |
-| ap-east-1 | 0.00895 | 0.00500 | 0.00293 |
-| eu-south-2 | 0.00912 | 0.00560 | 0.00252 |
-| eu-north-1 | 0.00921 | 0.00440 | 0.00314 |
-| ap-south-2 | 0.01085 | 0.00570 | 0.00224 |
-| us-east-2 | 0.01130 | 0.00710 | 0.00264 |
-| ap-southeast-3 | 0.01133 | 0.00460 | 0.00315 |
-| ap-southeast-4 | 0.01186 | 0.00770 | 0.00324 |
-| us-west-2 | 0.01231 | 0.00510 | 0.00370 |
-| ap-northeast-2 | 0.01254 | 0.00620 | 0.00303 |
-| us-east-1 | 0.01282 | 0.00580 | 0.00362 |
-| eu-central-2 | 0.01315 | 0.00860 | 0.00371 |
-| af-south-1 | 0.01320 | 0.00560 | 0.00567 |
-| ca-west-1 | 0.01378 | 0.00840 | 0.00264 |
-| eu-south-1 | 0.01405 | 0.00820 | 0.00323 |
-| sa-east-1 | 0.01417 | 0.00780 | 0.00347 |
-| ap-east-2 | 0.01458 | 0.01220 | 0.00307 |
-| eu-west-3 | 0.01561 | 0.00720 | 0.00232 |
-| eu-west-1 | 0.01577 | 0.01030 | 0.00334 |
-| ap-southeast-5 | 0.01630 | 0.01040 | 0.00300 |
 
 ### m8g.medium
 
@@ -226,27 +220,29 @@ Cheapest 20 regions in average for recent 2 years as of 2026/10/03:
 | eu-west-2 | 0.03886 | 0.01610 | 0.00703 |
 | eu-south-1 | 0.04038 | 0.02110 | 0.00806 |
 
-### m5.large
+### m7i-flex.large
+
+As of 2026/10/17.
 
 | region | avg_usd | min_usd | std_dev |
 |:--|--:|--:|--:|
-| ap-southeast-3 | 0.02027 | 0.01200 | 0.00605 |
-| eu-north-1 | 0.02164 | 0.01020 | 0.00624 |
-| eu-south-1 | 0.02263 | 0.01880 | 0.00266 |
-| ap-south-2 | 0.02562 | 0.01010 | 0.00874 |
-| sa-east-1 | 0.02665 | 0.01880 | 0.00284 |
-| af-south-1 | 0.02772 | 0.01800 | 0.00467 |
-| ap-southeast-4 | 0.02970 | 0.02270 | 0.00473 |
-| ap-east-1 | 0.02996 | 0.01560 | 0.00639 |
-| us-east-2 | 0.03106 | 0.01850 | 0.00587 |
-| ap-south-1 | 0.03151 | 0.01970 | 0.00517 |
-| ap-northeast-2 | 0.03217 | 0.01600 | 0.00722 |
-| il-central-1 | 0.03721 | 0.02780 | 0.00241 |
-| eu-west-2 | 0.03789 | 0.03320 | 0.00219 |
-| ca-central-1 | 0.03842 | 0.03330 | 0.00248 |
-| eu-west-3 | 0.03920 | 0.03190 | 0.00263 |
-| us-west-2 | 0.03969 | 0.03090 | 0.00343 |
-| us-west-1 | 0.03987 | 0.03220 | 0.00404 |
-| ap-northeast-3 | 0.04085 | 0.03460 | 0.00263 |
-| eu-south-2 | 0.04102 | 0.02560 | 0.00863 |
-| ca-west-1 | 0.04139 | 0.03270 | 0.00658 |
+| ap-southeast-3 | 0.02428 | 0.01200 | 0.00914 |
+| eu-north-1 | 0.02712 | 0.01490 | 0.00760 |
+| eu-south-2 | 0.02801 | 0.01690 | 0.00639 |
+| ap-southeast-4 | 0.02925 | 0.02220 | 0.00387 |
+| ap-south-2 | 0.02992 | 0.01010 | 0.01104 |
+| ap-east-2 | 0.03470 | 0.02880 | 0.00361 |
+| ap-east-1 | 0.03579 | 0.02660 | 0.00275 |
+| us-east-2 | 0.03630 | 0.02770 | 0.00364 |
+| sa-east-1 | 0.03716 | 0.02390 | 0.00482 |
+| ap-southeast-6 | 0.03740 | 0.03530 | 0.00076 |
+| mx-central-1 | 0.03791 | 0.02810 | 0.00545 |
+| ap-south-1 | 0.03803 | 0.02440 | 0.00784 |
+| eu-west-2 | 0.03830 | 0.01580 | 0.00705 |
+| ap-southeast-5 | 0.03877 | 0.03100 | 0.00349 |
+| ap-northeast-2 | 0.03892 | 0.02420 | 0.00744 |
+| us-east-1 | 0.04195 | 0.03280 | 0.00387 |
+| ca-central-1 | 0.04394 | 0.03400 | 0.00374 |
+| us-west-2 | 0.04418 | 0.03620 | 0.00376 |
+| eu-west-3 | 0.04804 | 0.04040 | 0.00410 |
+| us-west-1 | 0.04823 | 0.04160 | 0.00432 |

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import {
 	Architecture,
+	CompositeProvider,
 	Ec2RunnerProvider,
 	GitHubRunners,
 	Os,
@@ -10,13 +11,12 @@ import { App, aws_ec2 as ec2, Size, Stack } from "aws-cdk-lib";
 
 // ---- Edit here: explicit InstanceType objects ----
 const instanceTypes: ec2.InstanceType[] = [
-	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C8G, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.XLARGE),
-	ec2.InstanceType.of(ec2.InstanceClass.M5, ec2.InstanceSize.LARGE),
+	ec2.InstanceType.of(ec2.InstanceClass.M7I_FLEX, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M7I, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C7I, ec2.InstanceSize.LARGE),
 ];
@@ -84,20 +84,25 @@ x86ImageBuilder.addComponent(
 	RunnerImageComponent.custom({ commands: IMAGE_CMDS }),
 );
 
-const makeProvider = (id: string, itype: ec2.InstanceType) =>
+const makeProvider = (id: string, itype: ec2.InstanceType, spot: boolean) =>
 	new Ec2RunnerProvider(stack, id, {
 		instanceType: itype,
 		storageSize: Size.gibibytes(20),
 		labels: ["ec2", itype.toString()],
 		imageBuilder:
 			archOf(itype) === Architecture.ARM64 ? armImageBuilder : x86ImageBuilder,
-		spot: true,
+		spot,
 		vpc,
 	});
 
-const providers = instanceTypes.map((itype) =>
-	makeProvider(`runner-${itype.toString().replace(/\./g, "-")}`, itype),
-);
+// Try spot first and fall back to on-demand when there is no spot capacity, instead of leaving the job queued
+const providers = instanceTypes.map((itype) => {
+	const id = `runner-${itype.toString().replace(/\./g, "-")}`;
+	return CompositeProvider.fallback(stack, `${id}-fallback`, [
+		makeProvider(id, itype, true),
+		makeProvider(`${id}-on-demand`, itype, false),
+	]);
+});
 
 const runners = new GitHubRunners(stack, "runners", { providers });
 
