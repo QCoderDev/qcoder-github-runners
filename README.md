@@ -16,27 +16,30 @@ which leads to about 145x cost efficiency.
 - **Burstable (`t3`/`t4g`) types are not provided.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this cost more than the instance itself (e.g. a `t3.small` Docker build paid ~$0.0002 for the instance and ~$0.002 in credits).
 - Use non-burstable types:
   - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for light jobs, linters, code generation, Renovate and tests.
-  - `m7i-flex.large` (x86, 2 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
+  - `c5.xlarge` (x86, 4 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
 - `c8g.medium` and `m5.large` are not provided: their spot capacity in ap-southeast-3 ran out for hours in 2026-10, and their placement score was 1 in every AZ.
+- `m7i-flex.large` is not provided: all 17 spot reclaims in the week up to 2026-10-31 were `m7i-flex.large` (13 in `apse3-az1`, including 7 at once), each failing its running job, and its placement score dropped to 1 in `apse3-az1`. The Spot Instance Advisor still listed it at <5% interruptions, so check CloudTrail `BidEvictedEvent` and the placement score as well before choosing a type.
+- When the placement score and the advisor disagree, prefer the placement score: it reflects current capacity, while the advisor is a monthly average for the whole region.
 
 ## Spot Cost and Availability in ap-southeast-3
 
-As of 2026/10/17:
+As of 2026/11/01:
 
 - `spot_usd` / `on_demand_usd`: price per hour (spot is the 30-day average)
 - `availability`: 100% minus the Spot interruption frequency over the last month ([Spot Instance Advisor](https://aws.amazon.com/ec2/spot/instance-advisor/))
-- `score_az*`: [Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) for one instance (1–10, higher means a spot request is more likely to succeed). Each type was queried on its own, and AWS returns low scores for requests with fewer than three instance types, so compare types with each other rather than reading the score as absolute. Runners launch in `apse3-az1` and `apse3-az2` only.
+- `score_az*`: [Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) for three instances (1–10, higher means a spot request is more likely to succeed), as for a Playwright run with three shards. Each type was queried on its own, and AWS returns low scores for requests with fewer than three instance types, so compare types with each other rather than reading the score as absolute. Runners launch in `apse3-az1` and `apse3-az2` only.
+- ap-southeast-3 does not serve the placement score API, so call it from another region: `aws ec2 get-spot-placement-scores --region us-east-1 --region-names ap-southeast-3 --single-availability-zone ...`. Each account can query only a few new configurations per 24 hours.
 
 | instance | spot_usd | on_demand_usd | availability | score_az1 | score_az2 | score_az3 |
 |:--|--:|--:|--:|--:|--:|--:|
-| c8g.large | 0.0162 | 0.0916 | >95% | 3 | 1 | 1 |
-| c8g.xlarge | 0.0311 | 0.1833 | >95% | 3 | 1 | 1 |
-| m8g.medium | 0.0061 | 0.0561 | 90-95% | 3 | 3 | 3 |
-| m8g.large | 0.0126 | 0.1122 | >95% | 3 | 3 | 3 |
-| m8g.xlarge | 0.0243 | 0.2244 | >95% | 3 | 3 | 3 |
-| m7i-flex.large | 0.0129 | 0.1197 | >95% | 3 | 3 | 3 |
-| m7i.large | 0.0142 | 0.1260 | >95% | 3 | 1 | 1 |
-| c7i.large | 0.0116 | 0.1029 | 85-90% | 1 | 1 | 3 |
+| c8g.large | 0.0158 | 0.0916 | >95% | 1 | 3 | 1 |
+| c8g.xlarge | 0.0336 | 0.1833 | >95% | 1 | 1 | 1 |
+| m8g.medium | 0.0056 | 0.0561 | 90-95% | 3 | 3 | 3 |
+| m8g.large | 0.0113 | 0.1122 | >95% | 1 | 3 | 3 |
+| m8g.xlarge | 0.0224 | 0.2244 | >95% | 1 | 3 | 3 |
+| c5.xlarge | 0.0209 | 0.1960 | 90-95% | 3 | 3 | 3 |
+| m7i.large | 0.0127 | 0.1260 | >95% | 1 | 1 | 3 |
+| c7i.large | 0.0103 | 0.1029 | 85-90% | 1 | 1 | 3 |
 
 ## EC2 Spot Price by Region
 - Run script/compare_ec2_price_by_region.sh
@@ -220,29 +223,29 @@ Cheapest 20 regions in average for recent 2 years as of 2026/10/03:
 | eu-west-2 | 0.03886 | 0.01610 | 0.00703 |
 | eu-south-1 | 0.04038 | 0.02110 | 0.00806 |
 
-### m7i-flex.large
+### c5.xlarge
 
-As of 2026/10/17.
+As of 2026/11/01.
 
 | region | avg_usd | min_usd | std_dev |
 |:--|--:|--:|--:|
-| ap-southeast-3 | 0.02428 | 0.01200 | 0.00914 |
-| eu-north-1 | 0.02712 | 0.01490 | 0.00760 |
-| eu-south-2 | 0.02801 | 0.01690 | 0.00639 |
-| ap-southeast-4 | 0.02925 | 0.02220 | 0.00387 |
-| ap-south-2 | 0.02992 | 0.01010 | 0.01104 |
-| ap-east-2 | 0.03470 | 0.02880 | 0.00361 |
-| ap-east-1 | 0.03579 | 0.02660 | 0.00275 |
-| us-east-2 | 0.03630 | 0.02770 | 0.00364 |
-| sa-east-1 | 0.03716 | 0.02390 | 0.00482 |
-| ap-southeast-6 | 0.03740 | 0.03530 | 0.00076 |
-| mx-central-1 | 0.03791 | 0.02810 | 0.00545 |
-| ap-south-1 | 0.03803 | 0.02440 | 0.00784 |
-| eu-west-2 | 0.03830 | 0.01580 | 0.00705 |
-| ap-southeast-5 | 0.03877 | 0.03100 | 0.00349 |
-| ap-northeast-2 | 0.03892 | 0.02420 | 0.00744 |
-| us-east-1 | 0.04195 | 0.03280 | 0.00387 |
-| ca-central-1 | 0.04394 | 0.03400 | 0.00374 |
-| us-west-2 | 0.04418 | 0.03620 | 0.00376 |
-| eu-west-3 | 0.04804 | 0.04040 | 0.00410 |
-| us-west-1 | 0.04823 | 0.04160 | 0.00432 |
+| ap-southeast-3 | 0.03957 | 0.01960 | 0.01863 |
+| eu-north-1 | 0.04342 | 0.02480 | 0.00950 |
+| eu-south-2 | 0.05056 | 0.02200 | 0.01555 |
+| us-east-2 | 0.05260 | 0.04120 | 0.00611 |
+| ap-south-2 | 0.05374 | 0.01700 | 0.02211 |
+| ap-northeast-2 | 0.05475 | 0.03260 | 0.00977 |
+| eu-south-1 | 0.05827 | 0.03800 | 0.01010 |
+| ap-south-1 | 0.05874 | 0.03730 | 0.01012 |
+| ap-southeast-4 | 0.06205 | 0.04520 | 0.01084 |
+| ap-east-1 | 0.06459 | 0.05090 | 0.00512 |
+| sa-east-1 | 0.06520 | 0.04300 | 0.00656 |
+| ap-northeast-3 | 0.06816 | 0.05840 | 0.00965 |
+| us-west-2 | 0.06996 | 0.05620 | 0.00664 |
+| us-east-1 | 0.07114 | 0.05590 | 0.00497 |
+| ca-west-1 | 0.07311 | 0.04470 | 0.01131 |
+| us-west-1 | 0.07730 | 0.06640 | 0.00675 |
+| ca-central-1 | 0.07852 | 0.05360 | 0.00855 |
+| eu-west-2 | 0.07863 | 0.07170 | 0.00349 |
+| eu-central-2 | 0.08098 | 0.06770 | 0.00843 |
+| ap-northeast-1 | 0.08325 | 0.06860 | 0.00903 |

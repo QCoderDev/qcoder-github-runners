@@ -16,7 +16,7 @@ const instanceTypes: ec2.InstanceType[] = [
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.XLARGE),
-	ec2.InstanceType.of(ec2.InstanceClass.M7I_FLEX, ec2.InstanceSize.LARGE),
+	ec2.InstanceType.of(ec2.InstanceClass.C5, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M7I, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C7I, ec2.InstanceSize.LARGE),
 ];
