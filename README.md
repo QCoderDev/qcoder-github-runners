@@ -16,10 +16,9 @@ which leads to about 145x cost efficiency.
 - **Burstable (`t3`/`t4g`) types are not provided.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this cost more than the instance itself (e.g. a `t3.small` Docker build paid ~$0.0002 for the instance and ~$0.002 in credits).
 - Use non-burstable types:
   - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for light jobs, linters, code generation, Renovate and tests.
-  - `m8g.large` (Arm, 2 vCPU, 8 GiB) for Playwright. All browsers have arm64 builds, and 1 vCPU (`m8g.medium`) made tests time out.
+  - `m8g.large` (Arm, 2 vCPU, 8 GiB) for Playwright.
   - `c5.xlarge` (x86, 4 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds.
 - `c8g.medium` and `m5.large` are not provided: their spot capacity in ap-southeast-3 ran out for hours in 2026-10, and their placement score was 1 in every AZ.
-- `m7i-flex.large` is not provided: all 17 spot reclaims in the week up to 2026-10-31 were `m7i-flex.large` (13 in `apse3-az1`, including 7 at once), each failing its running job, and its placement score dropped to 1 in `apse3-az1`. The Spot Instance Advisor still listed it at <5% interruptions, so check CloudTrail `BidEvictedEvent` and the placement score as well before choosing a type.
 - When the placement score and the advisor disagree, prefer the placement score: it reflects current capacity, while the advisor is a monthly average for the whole region.
 
 ## Spot Cost and Availability in ap-southeast-3
