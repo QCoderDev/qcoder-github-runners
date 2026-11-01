@@ -93,6 +93,8 @@ const makeProvider = (id: string, itype: ec2.InstanceType, spot: boolean) =>
 			archOf(itype) === Architecture.ARM64 ? armImageBuilder : x86ImageBuilder,
 		spot,
 		vpc,
+		// Spot in ap-southeast-3b only: most reclaims hit ap-southeast-3a
+		subnetSelection: spot ? { subnets: [vpc.publicSubnets[1]] } : undefined,
 	});
 
 // Try spot first and fall back to on-demand when there is no spot capacity, instead of leaving the job queued

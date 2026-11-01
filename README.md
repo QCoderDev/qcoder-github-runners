@@ -27,7 +27,7 @@ As of 2026/11/01:
 
 - `spot_usd` / `on_demand_usd`: price per hour (spot is the 30-day average)
 - `availability`: 100% minus the Spot interruption frequency over the last month ([Spot Instance Advisor](https://aws.amazon.com/ec2/spot/instance-advisor/))
-- `score_az*`: [Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) for three instances (1–10, higher means a spot request is more likely to succeed). Each type was queried on its own, and AWS returns low scores for requests with fewer than three instance types, so compare types with each other rather than reading the score as absolute. Runners launch in `apse3-az1` and `apse3-az2` only.
+- `score_az*`: [Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) for three instances (1–10, higher means a spot request is more likely to succeed). Each type was queried on its own, and AWS returns low scores for requests with fewer than three instance types, so compare types with each other rather than reading the score as absolute. Spot runners launch in `apse3-az2` only, and the on-demand fallback in `apse3-az1` and `apse3-az2`.
 - ap-southeast-3 does not serve the placement score API, so call it from another region: `aws ec2 get-spot-placement-scores --region us-east-1 --region-names ap-southeast-3 --single-availability-zone ...`. Each account can query only a few new configurations per 24 hours.
 
 | instance | spot_usd | on_demand_usd | availability | score_az1 | score_az2 | score_az3 |
