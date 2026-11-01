@@ -16,7 +16,8 @@ which leads to about 145x cost efficiency.
 - **Burstable (`t3`/`t4g`) types are not provided.** They launch in `unlimited` mode, and each runner is a fresh instance with no credit balance, so any job that uses more than the baseline CPU (20–30%) pays for surplus credits: $0.05 per vCPU-hour for `t3` and $0.04 for `t4g`. For CPU-heavy jobs this cost more than the instance itself (e.g. a `t3.small` Docker build paid ~$0.0002 for the instance and ~$0.002 in credits).
 - Use non-burstable types:
   - `m8g.medium` (Arm, 1 vCPU, 4 GiB) for light jobs, linters, code generation, Renovate and tests.
-  - `c5.xlarge` (x86, 4 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds and Playwright.
+  - `m8g.large` (Arm, 2 vCPU, 8 GiB) for Playwright. All browsers have arm64 builds, and 1 vCPU (`m8g.medium`) made tests time out.
+  - `c5.xlarge` (x86, 4 vCPU, 8 GiB) for `--platform linux/amd64` Docker builds.
 - `c8g.medium` and `m5.large` are not provided: their spot capacity in ap-southeast-3 ran out for hours in 2026-10, and their placement score was 1 in every AZ.
 - `m7i-flex.large` is not provided: all 17 spot reclaims in the week up to 2026-10-31 were `m7i-flex.large` (13 in `apse3-az1`, including 7 at once), each failing its running job, and its placement score dropped to 1 in `apse3-az1`. The Spot Instance Advisor still listed it at <5% interruptions, so check CloudTrail `BidEvictedEvent` and the placement score as well before choosing a type.
 - When the placement score and the advisor disagree, prefer the placement score: it reflects current capacity, while the advisor is a monthly average for the whole region.
@@ -27,7 +28,7 @@ As of 2026/11/01:
 
 - `spot_usd` / `on_demand_usd`: price per hour (spot is the 30-day average)
 - `availability`: 100% minus the Spot interruption frequency over the last month ([Spot Instance Advisor](https://aws.amazon.com/ec2/spot/instance-advisor/))
-- `score_az*`: [Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) for three instances (1–10, higher means a spot request is more likely to succeed), as for a Playwright run with three shards. Each type was queried on its own, and AWS returns low scores for requests with fewer than three instance types, so compare types with each other rather than reading the score as absolute. Runners launch in `apse3-az1` and `apse3-az2` only.
+- `score_az*`: [Spot placement score](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html) for three instances (1–10, higher means a spot request is more likely to succeed). Each type was queried on its own, and AWS returns low scores for requests with fewer than three instance types, so compare types with each other rather than reading the score as absolute. Runners launch in `apse3-az1` and `apse3-az2` only.
 - ap-southeast-3 does not serve the placement score API, so call it from another region: `aws ec2 get-spot-placement-scores --region us-east-1 --region-names ap-southeast-3 --single-availability-zone ...`. Each account can query only a few new configurations per 24 hours.
 
 | instance | spot_usd | on_demand_usd | availability | score_az1 | score_az2 | score_az3 |
