@@ -2,7 +2,7 @@ regions:
   - ap-southeast-3
 
 blocklist:
-- "999999999999"
+  - "999999999999"
 
 accounts:
   "879381269061": {}
