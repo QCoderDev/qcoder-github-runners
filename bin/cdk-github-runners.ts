@@ -16,7 +16,7 @@ const instanceTypes: ec2.InstanceType[] = [
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.MEDIUM),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M8G, ec2.InstanceSize.XLARGE),
-	ec2.InstanceType.of(ec2.InstanceClass.M7I_FLEX, ec2.InstanceSize.LARGE),
+	ec2.InstanceType.of(ec2.InstanceClass.C5, ec2.InstanceSize.XLARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.M7I, ec2.InstanceSize.LARGE),
 	ec2.InstanceType.of(ec2.InstanceClass.C7I, ec2.InstanceSize.LARGE),
 ];
@@ -87,12 +87,14 @@ x86ImageBuilder.addComponent(
 const makeProvider = (id: string, itype: ec2.InstanceType, spot: boolean) =>
 	new Ec2RunnerProvider(stack, id, {
 		instanceType: itype,
-		storageSize: Size.gibibytes(20),
+		storageSize: Size.gibibytes(50),
 		labels: ["ec2", itype.toString()],
 		imageBuilder:
 			archOf(itype) === Architecture.ARM64 ? armImageBuilder : x86ImageBuilder,
 		spot,
 		vpc,
+		// Spot in ap-southeast-3b only: most reclaims hit ap-southeast-3a
+		subnetSelection: spot ? { subnets: [vpc.publicSubnets[1]] } : undefined,
 	});
 
 // Try spot first and fall back to on-demand when there is no spot capacity, instead of leaving the job queued
