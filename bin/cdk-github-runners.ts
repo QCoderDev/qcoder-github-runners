@@ -87,7 +87,7 @@ x86ImageBuilder.addComponent(
 const makeProvider = (id: string, itype: ec2.InstanceType, spot: boolean) =>
 	new Ec2RunnerProvider(stack, id, {
 		instanceType: itype,
-		storageSize: Size.gibibytes(20),
+		storageSize: Size.gibibytes(50),
 		labels: ["ec2", itype.toString()],
 		imageBuilder:
 			archOf(itype) === Architecture.ARM64 ? armImageBuilder : x86ImageBuilder,
