@@ -21,14 +21,14 @@
 	},
 	"devDependencies": {
 		"@aws-cdk/aws-ec2-alpha": "^2.214.0-alpha.0",
-		"@biomejs/biome": "2.6.6",
+		"@biomejs/biome": "2.6.7",
 		"@types/node": "24.19.2",
-		"aws-cdk": "2.1148.0",
+		"aws-cdk": "2.1148.1",
 		"typescript": "~7.0.0"
 	},
 	"dependencies": {
 		"@cloudsnorkel/cdk-github-runners": "^0.18.0",
-		"aws-cdk-lib": "2.275.0",
+		"aws-cdk-lib": "2.277.0",
 		"constructs": "^10.4.2",
 		"npm-check-updates": "^23.0.0"
 	}
