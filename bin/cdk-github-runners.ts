@@ -33,6 +33,8 @@ const vpc = new ec2.Vpc(stack, "VPC", {
 
 const IMAGE_OS = Os.LINUX_UBUNTU_2404;
 const IMAGE_CMDS = [
+	"systemctl mask apt-daily.timer apt-daily-upgrade.timer",
+	"apt purge -y unattended-upgrades",
 	"apt update",
 	"apt install -y build-essential libatomic1 pkg-config zstd",
 	"apt upgrade -y",
